@@ -21,7 +21,11 @@ gulp.src('./src/*.yml')
   .pipe(gulp.dest('./dist/'))
 
 gulp.src('./src/*.yml')
-  .pipe(yaml({ pretty: true ))
+  .pipe(yaml({ pretty: true }))
+  .pipe(gulp.dest('./dist/'))
+  
+gulp.src('./src/*.yml')
+  .pipe(yaml({ safe: true }))
   .pipe(gulp.dest('./dist/'))
 ```
 
@@ -33,9 +37,20 @@ gulp.src('./src/*.yml')
 #### options.pretty
 
 Type: `Boolean`
+
 Default: `false`
 
 Output pretty (indented) resulting JSON.
+
+#### options.safe
+
+Type: `Boolean`
+
+Default: `false`
+
+Enable support for regexps, functions and undefined. 
+
+**This flag should be enabled when working with untrusted data.**
 
 
 ## LICENSE

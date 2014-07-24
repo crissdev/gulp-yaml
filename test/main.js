@@ -13,7 +13,7 @@ describe('gulp-yaml', function() {
             path: './test/file.yml',
             cwd: './test/',
             base: './test/',
-            contents: new Buffer(fs.readFileSync('./test/file.yml'))
+            contents: fs.readFileSync('./test/file.yml')
         })
     });
 
@@ -32,20 +32,19 @@ describe('gulp-yaml', function() {
         var stream = yaml();
 
         stream.once('data', function(file) {
-            file.contents.toString().should.equal('{"root":{"key":"value"}}');
+            file.contents.toString('utf8').should.equal('{"root":{"key":"value"}}');
             done();
         });
 
         stream.write(yamlTestFile);
         stream.end();
     });
-
 
     it('should convert to pretty json', function(done) {
         var stream = yaml({ pretty: true });
 
         stream.once('data', function(file) {
-            file.contents.toString().should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+            file.contents.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
             done();
         });
 
@@ -53,8 +52,7 @@ describe('gulp-yaml', function() {
         stream.end();
     });
 
-
-    it('should not nothing', function(done) {
+    it('should do nothing', function(done) {
         var stream = yaml();
 
         stream.once('data', function(file) {
@@ -73,6 +71,40 @@ describe('gulp-yaml', function() {
         stream.end();
     });
 
+    it('should not accept empty file', function(done) {
+        var stream = yaml(),
+            file = new gutil.File({
+                path: './test/file.yml',
+                cwd: './test/',
+                base: './test/',
+                contents: new Buffer('')
+            });
+
+        stream.once('error', function(error) {
+            error.message.should.equal('File ' + yamlTestFile.path + ' is empty. YAML loader cannot load empty content');
+            done();
+        });
+
+        stream.write(file);
+        stream.end();
+    });
+
+    it('should throw if loading untrusted document with safe option enabled', function(done) {
+        var stream = yaml({ safe: true }),
+            file = new gutil.File({
+                path: './test/unsafe.yml',
+                cwd: './test/',
+                base: './test/',
+                contents: new Buffer(fs.readFileSync('./test/unsafe.yml'), 'utf8')
+            });
+
+        stream.once('error', function(error) {
+            done();
+        });
+
+        stream.write(file);
+        stream.end();
+    });
 });
 
 
