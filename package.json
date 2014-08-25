@@ -1,6 +1,6 @@
 {
   "name": "gulp-yaml",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Convert YAML to JSON",
   "main": "index.js",
   "scripts": {
@@ -18,16 +18,17 @@
     "type": "git",
     "url": "https://github.com/CrissDev/gulp-yaml.git"
   },
+  "homepage": "https://github.com/CrissDev/gulp-yaml",
   "author": "cristian <t4013-github@yahoo.com>",
   "license": "MIT",
   "devDependencies": {
     "assert": "~1.1.1",
-    "mocha": "~1.20.1",
+    "mocha": "~1.21.4",
     "should": "~4.0.4"
   },
   "dependencies": {
-    "through2": "~0.5.1",
+    "through2": "~0.6.1",
     "gulp-util": "~3.0.0",
-    "js-yaml": "~3.1.0"
+    "js-yaml": "~3.2.1"
   }
 }
