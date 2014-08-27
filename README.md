@@ -27,6 +27,10 @@ gulp.src('./src/*.yml')
 gulp.src('./src/*.yml')
   .pipe(yaml({ safe: true }))
   .pipe(gulp.dest('./dist/'))
+
+gulp.src('./src/*.yml')
+  .pipe(yaml({ format: 'js' }))
+  .pipe(gulp.dest('./dist/'))
 ```
 
 
@@ -52,6 +56,13 @@ Enable support for regexps, functions and undefined.
 
 **This flag should be enabled when working with untrusted data.**
 
+#### options.format
+
+Type: `String`
+
+Default: `json`
+
+Specify output file format. Available formats are 'json', 'jsonp' and 'js'. JSONP and JS file formats are simple wrappers useful for concatenating later during build process.
 
 ## LICENSE
 

@@ -10,19 +10,28 @@ module.exports = function(options) {
 
     options = options || {
         pretty: false,
-        safe: false
+        safe: false,
+        format: 'json'
     };
 
     // Creating a stream through which each file will pass
     // returning the file stream
     return through.obj(function(file, enc, callback) {
+
         if (file.isNull()) {
             // Do nothing if no contents
         }
+
+        if (file.isStream()) {
+            throw new PluginError(PLUGIN_NAME, 'Streaming is not supported!');
+        }
+
         if (file.isBuffer()) {
             var space = options.pretty ? 2 : null,
                 contents = file.contents.toString('utf8'),
-                ymlDocument;
+                filename = gutil.replaceExtension(file.relative, ''),
+                ymlDocument,
+                jsonString;
 
             if (contents.length === 0) {
                 this.emit('error', new PluginError(PLUGIN_NAME, 'File ' + file.path + ' is empty. YAML loader cannot load empty content'));
@@ -42,12 +51,25 @@ module.exports = function(options) {
                 return callback();
             }
 
-            file.contents = new Buffer(JSON.stringify(ymlDocument, null, space));
-            file.path = gutil.replaceExtension(file.path, '.json');
-        }
+            jsonString = JSON.stringify(ymlDocument, null, space);
 
-        if (file.isStream()) {
-            throw new PluginError(PLUGIN_NAME, 'Streaming is not supported!');
+            switch(options.format) {
+
+                case "jsonp":
+                    file.contents = new Buffer(filename + "(" + jsonString + ");");
+                    file.path = gutil.replaceExtension(file.path, '.jsonp');
+                    break;
+
+                case "js":
+                    file.contents = new Buffer("var " + filename + " = " + jsonString + ";");
+                    file.path = gutil.replaceExtension(file.path, '.js');
+                    break;
+
+                case "json":
+                default:
+                    file.contents = new Buffer(jsonString);
+                    file.path = gutil.replaceExtension(file.path, '.json');
+            }
         }
 
         this.push(file);
