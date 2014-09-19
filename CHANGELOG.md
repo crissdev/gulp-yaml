@@ -1,3 +1,15 @@
+# 0.2.0
+
+## Features
+
+- **gulp-yaml**
+    - add support for streams
+    - add new options *space* and *replacer* to have a better control of the output
+    - upgrade js-yaml dependency to its last version available (3.2.2)
+
+**The _pretty_ option has been deprecated, and _space_ option should be used instead**
+
+
 # 0.1.0
 
 ## Features
@@ -7,8 +19,8 @@
 
 ## Breaking changes
 
-- **gulp-yaml** Because this plugin uses 
-[js-yaml](https://github.com/nodeca/js-yaml) this version might add some breaking changes. Please 
+- **gulp-yaml** Because this plugin uses
+[js-yaml](https://github.com/nodeca/js-yaml) this version might add some breaking changes. Please
 check [js-yaml Breaking changes](https://github.com/nodeca/js-yaml#breaking-changes-in-2xx---3xx)
 for potential issues and how to fix them.
 
@@ -17,8 +29,8 @@ for potential issues and how to fix them.
 
 ## Features
 
-- **gulp-yaml** add ```safe``` to the list of supported options. The default value is ```false``` 
-  to maintain compatibility with previous versions. If you suspect to have untrusted YAML in your 
+- **gulp-yaml** add ```safe``` to the list of supported options. The default value is ```false```
+  to maintain compatibility with previous versions. If you suspect to have untrusted YAML in your
   project files, then turn this flag on.
 
 

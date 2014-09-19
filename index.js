@@ -1,55 +1,71 @@
-// through2 is a thin wrapper around node transform streams
-var through = require('through2');
-var gutil   = require('gulp-util');
-var yaml    = require('js-yaml');
-var PluginError = gutil.PluginError;
+'use strict';
 
-const PLUGIN_NAME = 'gulp-yaml';
+var through = require('through2'),
+    gutil   = require('gulp-util'),
+    yaml    = require('js-yaml'),
+    extend  = require('extend'),
+    BufferStreams = require('bufferstreams'),
+    PluginError = gutil.PluginError,
+    PLUGIN_NAME = 'gulp-yaml';
+
+
+function yaml2json(buffer, options) {
+    var contents = buffer.toString('utf8'),
+        ymlDocument = options.safe ? yaml.safeLoad(contents) : yaml.load(contents);
+    return new Buffer(JSON.stringify(ymlDocument, options.replacer, options.space));
+}
 
 module.exports = function(options) {
+    options = extend({ safe: false, replacer: null, space: null }, options);
 
-    options = options || {
-        pretty: false,
-        safe: false
-    };
+    if (options.pretty) {
+        gutil.log(gutil.colors.gray(PLUGIN_NAME +
+            ': pretty option has been deprecated. Use the new space option instead.'));
+        options.space = 2;
+    }
 
-    // Creating a stream through which each file will pass
-    // returning the file stream
     return through.obj(function(file, enc, callback) {
-        if (file.isNull()) {
-            // Do nothing if no contents
-        }
-        if (file.isBuffer()) {
-            var space = options.pretty ? 2 : null,
-                contents = file.contents.toString('utf8'),
-                ymlDocument;
+        var self = this;
 
-            if (contents.length === 0) {
-                this.emit('error', new PluginError(PLUGIN_NAME, 'File ' + file.path + ' is empty. YAML loader cannot load empty content'));
+        if (file.isBuffer()) {
+            if (file.contents.length === 0) {
+                this.emit('error', new PluginError(PLUGIN_NAME, 'File ' + file.path +
+                    ' is empty. YAML loader cannot load empty content'));
                 return callback();
             }
-
             try {
-                if (options.safe) {
-                    ymlDocument = yaml.safeLoad(contents);
-                }
-                else {
-                    ymlDocument = yaml.load(contents);
-                }
+                file.contents = yaml2json(file.contents, options);
+                file.path = gutil.replaceExtension(file.path, '.json');
             }
             catch (error) {
                 this.emit('error', new PluginError(PLUGIN_NAME, error.message));
                 return callback();
             }
-
-            file.contents = new Buffer(JSON.stringify(ymlDocument, null, space));
-            file.path = gutil.replaceExtension(file.path, '.json');
         }
-
-        if (file.isStream()) {
-            throw new PluginError(PLUGIN_NAME, 'Streaming is not supported!');
+        else if (file.isStream()) {
+            file.contents = file.contents.pipe(new BufferStreams(function(err, buf, cb) {
+                if (err) {
+                    self.emit('error', new PluginError(PLUGIN_NAME, err.message));
+                }
+                else {
+                    if (buf.length === 0) {
+                        var error = new PluginError(PLUGIN_NAME, 'File ' + file.path +
+                                ' is empty. YAML loader cannot load empty content');
+                        self.emit('error', error);
+                        cb(error);
+                    }
+                    else {
+                        try {
+                            cb(null, yaml2json(buf, options));
+                        }
+                        catch (error) {
+                            self.emit('error', new PluginError(PLUGIN_NAME, error.message));
+                            cb(error);
+                        }
+                    }
+                }
+            }));
         }
-
         this.push(file);
         return callback();
     });

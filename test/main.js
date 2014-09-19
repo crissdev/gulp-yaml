@@ -1,8 +1,13 @@
-var should = require('should');
+'use strict';
+
 var yaml = require('../');
 var gutil = require('gulp-util');
+var es = require('event-stream');
 var fs = require('fs');
+
+require('should');
 require('mocha');
+
 
 describe('gulp-yaml', function() {
 
@@ -14,7 +19,7 @@ describe('gulp-yaml', function() {
             cwd: './test/',
             base: './test/',
             contents: fs.readFileSync('./test/file.yml')
-        })
+        });
     });
 
     it('should change extension to .json', function(done) {
@@ -41,6 +46,18 @@ describe('gulp-yaml', function() {
     });
 
     it('should convert to pretty json', function(done) {
+        var stream = yaml({ space: 2 });
+
+        stream.once('data', function(file) {
+            file.contents.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+            done();
+        });
+
+        stream.write(yamlTestFile);
+        stream.end();
+    });
+
+    it('should convert to pretty json with deprecated option pretty', function(done) {
         var stream = yaml({ pretty: true });
 
         stream.once('data', function(file) {
@@ -81,7 +98,8 @@ describe('gulp-yaml', function() {
             });
 
         stream.once('error', function(error) {
-            error.message.should.equal('File ' + yamlTestFile.path + ' is empty. YAML loader cannot load empty content');
+            error.message.should.equal('File ' + yamlTestFile.path +
+                ' is empty. YAML loader cannot load empty content');
             done();
         });
 
@@ -105,6 +123,43 @@ describe('gulp-yaml', function() {
         stream.write(file);
         stream.end();
     });
+
+    it('should work with streams', function(done) {
+        var stream = yaml({ space: 2 }),
+            file = new gutil.File({
+                path: './test/file.yml',
+                cwd: './test/',
+                base: './test/',
+                contents: fs.createReadStream('./test/file.yml', { encoding: 'utf8' })
+            });
+
+        stream.on('data', function(file) {
+            file.pipe(es.wait(function(err, data) {
+                data.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+                done();
+            }));
+        });
+
+        stream.write(file);
+        stream.end();
+    });
+
+    it('should not accept empty stream', function(done) {
+        var stream = yaml({ space: 2 }),
+            file = new gutil.File({
+                path: './test/empty.yml',
+                cwd: './test/',
+                base: './test/',
+                contents: fs.createReadStream('./test/empty.yml', { encoding: 'utf8' })
+            });
+
+        stream.once('error', function(error) {
+            error.message.should.equal('File ' + file.path +
+                ' is empty. YAML loader cannot load empty content');
+            done();
+        });
+
+        stream.write(file);
+        stream.end();
+    });
 });
-
-
