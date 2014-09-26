@@ -1,9 +1,11 @@
 'use strict';
 
-var yaml = require('../');
-var gutil = require('gulp-util');
-var es = require('event-stream');
-var fs = require('fs');
+var yaml = require('../'),
+    gutil = require('gulp-util'),
+    File = gutil.File,
+    es = require('event-stream'),
+    fs = require('fs'),
+    path = require('path');
 
 require('should');
 require('mocha');
@@ -11,155 +13,248 @@ require('mocha');
 
 describe('gulp-yaml', function() {
 
-    var yamlTestFile;
+    // Test files
+    var emptyFile,
+        unsafeFile,
+        validFile,
+        invalidFile,
+        nullFile;
 
-    beforeEach(function() {
-        yamlTestFile = new gutil.File({
-            path: './test/file.yml',
-            cwd: './test/',
-            base: './test/',
-            contents: fs.readFileSync('./test/file.yml')
-        });
-    });
 
-    it('should change extension to .json', function(done) {
-        var stream = yaml();
-        stream.once('data', function(file) {
-            var path = require('path');
-            path.extname(file.path).should.equal('.json');
-            done();
-        });
-        stream.write(yamlTestFile);
-        stream.end();
-    });
+    describe('in buffer mode', function() {
 
-    it('should convert to json', function(done) {
-        var stream = yaml();
-
-        stream.once('data', function(file) {
-            file.contents.toString('utf8').should.equal('{"root":{"key":"value"}}');
-            done();
-        });
-
-        stream.write(yamlTestFile);
-        stream.end();
-    });
-
-    it('should convert to pretty json', function(done) {
-        var stream = yaml({ space: 2 });
-
-        stream.once('data', function(file) {
-            file.contents.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
-            done();
-        });
-
-        stream.write(yamlTestFile);
-        stream.end();
-    });
-
-    it('should convert to pretty json with deprecated option pretty', function(done) {
-        var stream = yaml({ pretty: true });
-
-        stream.once('data', function(file) {
-            file.contents.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
-            done();
-        });
-
-        stream.write(yamlTestFile);
-        stream.end();
-    });
-
-    it('should do nothing', function(done) {
-        var stream = yaml();
-
-        stream.once('data', function(file) {
-            var path = require('path');
-            path.extname(file.path).should.equal('.yml');
-            done();
-        });
-
-        stream.write(new gutil.File({
-            path: './test/file.yml',
-            cwd: './test/',
-            base: './test/',
-            contents: null
-        }));
-
-        stream.end();
-    });
-
-    it('should not accept empty file', function(done) {
-        var stream = yaml(),
-            file = new gutil.File({
-                path: './test/file.yml',
-                cwd: './test/',
-                base: './test/',
+        beforeEach(function() {
+            emptyFile = new File({
+                path: 'test/empty.yml',
+                cwd: 'test',
                 contents: new Buffer('')
             });
-
-        stream.once('error', function(error) {
-            error.message.should.equal('File ' + yamlTestFile.path +
-                ' is empty. YAML loader cannot load empty content');
-            done();
+            unsafeFile = new File({
+                path: 'test/unsafe.yml',
+                cwd: 'test',
+                contents: fs.createReadStream('test/unsafe.yml')
+            });
+            validFile = new File({
+                path: 'test/valid.yml',
+                cwd: 'test',
+                contents: fs.readFileSync('test/valid.yml')
+            });
+            invalidFile = new File({
+                path: 'test/invalid.yml',
+                cwd: 'test',
+                contents: fs.readFileSync('test/invalid.yml')
+            });
+            nullFile = new File({
+                cwd: 'test',
+                contents: null
+            });
         });
 
-        stream.write(file);
-        stream.end();
-    });
+        it('should convert to json', function(done) {
+            var stream = yaml();
 
-    it('should throw if loading untrusted document with safe option enabled', function(done) {
-        var stream = yaml({ safe: true }),
-            file = new gutil.File({
-                path: './test/unsafe.yml',
-                cwd: './test/',
-                base: './test/',
-                contents: new Buffer(fs.readFileSync('./test/unsafe.yml'), 'utf8')
-            });
-
-        stream.once('error', function(error) {
-            done();
-        });
-
-        stream.write(file);
-        stream.end();
-    });
-
-    it('should work with streams', function(done) {
-        var stream = yaml({ space: 2 }),
-            file = new gutil.File({
-                path: './test/file.yml',
-                cwd: './test/',
-                base: './test/',
-                contents: fs.createReadStream('./test/file.yml', { encoding: 'utf8' })
-            });
-
-        stream.on('data', function(file) {
-            file.pipe(es.wait(function(err, data) {
-                data.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+            stream.once('data', function(file) {
+                file.contents.toString('utf8').should.equal('{"root":{"key":"value"}}');
+                path.extname(file.path).should.equal('.json');
                 done();
-            }));
-        });
-
-        stream.write(file);
-        stream.end();
-    });
-
-    it('should not accept empty stream', function(done) {
-        var stream = yaml({ space: 2 }),
-            file = new gutil.File({
-                path: './test/empty.yml',
-                cwd: './test/',
-                base: './test/',
-                contents: fs.createReadStream('./test/empty.yml', { encoding: 'utf8' })
             });
 
-        stream.once('error', function(error) {
-            error.message.should.equal('File ' + file.path +
-                ' is empty. YAML loader cannot load empty content');
-            done();
+            stream.write(validFile);
+            stream.end();
         });
 
-        stream.write(file);
-        stream.end();
+        it('should convert to pretty json', function(done) {
+            var stream = yaml({space: 2});
+
+            stream.once('data', function(file) {
+                file.contents.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+                path.extname(file.path).should.equal('.json');
+                done();
+            });
+
+            stream.write(validFile);
+            stream.end();
+        });
+
+        it('should convert to pretty json with deprecated option pretty', function(done) {
+            var stream = yaml({pretty: true});
+
+            stream.once('data', function(file) {
+                file.contents.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+                path.extname(file.path).should.equal('.json');
+                done();
+            });
+
+            stream.write(validFile);
+            stream.end();
+        });
+
+        it('should do nothing when contents is null', function(done) {
+            var stream = yaml();
+
+            stream.once('data', function(file) {
+                file.isNull().should.equal(true);
+                path.extname(file.path).should.equal('');
+                done();
+            });
+
+            stream.write(nullFile);
+            stream.end();
+        });
+
+        it('should throw if empty file', function(done) {
+            var stream = yaml();
+
+            stream.once('error', function(error) {
+                error.message.should.equal('File ' + emptyFile.path +
+                ' is empty. YAML loader cannot load empty content');
+                done();
+            });
+
+            stream.write(emptyFile);
+            stream.end();
+        });
+
+        it('should throw if not well formatted', function(done) {
+            var stream = yaml();
+
+            stream.once('error', function(error) {
+                done();
+            });
+
+            stream.write(invalidFile);
+            stream.end();
+        });
+
+        it('should throw if loading untrusted document with safe option enabled', function(done) {
+            var stream = yaml({safe: true});
+
+            stream.once('error', function(/*error*/) {
+                done();
+            });
+
+            stream.write(unsafeFile);
+            stream.end();
+        });
     });
+
+    describe('in stream mode', function() {
+
+        beforeEach(function() {
+            emptyFile = new gutil.File({
+                path: 'test/empty.yml',
+                cwd: 'test',
+                contents: fs.createReadStream('test/empty.yml')
+            });
+            unsafeFile = new File({
+                path: 'test/unsafe.yml',
+                cwd: 'test',
+                contents: fs.createReadStream('test/unsafe.yml')
+            });
+            validFile = new File({
+                path: 'test/valid.yml',
+                cwd: 'test',
+                contents: fs.createReadStream('test/valid.yml')
+            });
+            invalidFile = new File({
+                path: 'test/invalid.yml',
+                cwd: 'test',
+                contents: fs.createReadStream('test/invalid.yml')
+            });
+        });
+
+        it('should convert to json', function(done) {
+            var stream = yaml();
+
+            stream.once('data', function(file) {
+                file.contents.pipe(es.wait(function(err, data) {
+                    data.toString('utf8').should.equal('{"root":{"key":"value"}}');
+                    path.extname(file.path).should.equal('.json');
+                    done();
+                }));
+            });
+
+            stream.write(validFile);
+            stream.end();
+        });
+
+        it('should convert to pretty json', function(done) {
+            var stream = yaml({space: 2});
+
+            stream.once('data', function(file) {
+                file.contents.pipe(es.wait(function(err, data) {
+                    data.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+                    path.extname(file.path).should.equal('.json');
+                    done();
+                }));
+            });
+
+            stream.write(validFile);
+            stream.end();
+        });
+
+        it('should convert to pretty json with deprecated option pretty', function(done) {
+            var stream = yaml({pretty: true});
+
+            stream.once('data', function(file) {
+                file.contents.pipe(es.wait(function(err, data) {
+                    data.toString('utf8').should.equal('{\n  "root": {\n    "key": "value"\n  }\n}');
+                    path.extname(file.path).should.equal('.json');
+                    done();
+                }));
+            });
+
+            stream.write(validFile);
+            stream.end();
+        });
+
+        it('should do nothing when contents is null', function(done) {
+            var stream = yaml();
+
+            stream.once('data', function(file) {
+                file.isNull().should.equal(true);
+                path.extname(file.path).should.equal('');
+                done();
+            });
+
+            stream.write(nullFile);
+            stream.end();
+        });
+
+        it('should throw if empty file', function(done) {
+            var stream = yaml();
+
+            stream.once('error', function(error) {
+                error.message.should.equal('File ' + emptyFile.path +
+                ' is empty. YAML loader cannot load empty content');
+                done();
+            });
+
+            stream.write(emptyFile);
+            stream.end();
+        });
+
+        it('should throw if not well formatted', function(done) {
+            var stream = yaml();
+
+            stream.once('error', function(error) {
+                done();
+            });
+
+            stream.write(invalidFile);
+            stream.end();
+        });
+
+        it('should throw if loading untrusted document with safe option enabled', function(done) {
+            var stream = yaml({safe: true});
+
+            stream.once('error', function(/*error*/) {
+                done();
+            });
+
+            stream.write(unsafeFile);
+            stream.end();
+        });
+    });
+
 });

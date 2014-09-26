@@ -56,6 +56,7 @@ module.exports = function(options) {
                     }
                     else {
                         try {
+                            file.path = gutil.replaceExtension(file.path, '.json');
                             cb(null, yaml2json(buf, options));
                         }
                         catch (error) {
