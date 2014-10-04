@@ -1,3 +1,8 @@
+# 0.2.2 (2014-10-04)
+
+- use new Github user name
+
+
 # 0.2.1 (2014-09-26)
 
 ## Bug Fixes
