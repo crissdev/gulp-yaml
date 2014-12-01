@@ -1,6 +1,6 @@
 {
   "name": "gulp-yaml",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Convert YAML to JSON",
   "main": "index.js",
   "scripts": {
