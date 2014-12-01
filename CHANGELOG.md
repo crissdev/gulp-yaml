@@ -1,3 +1,9 @@
+# 0.2.3 (2014-12-01)
+
+- unsafe file was tested only in stream mode
+- updated js-yaml dependency to its latest version available (3.2.3)
+
+
 # 0.2.2 (2014-10-04)
 
 - use new Github user name
