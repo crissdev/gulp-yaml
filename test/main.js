@@ -32,7 +32,7 @@ describe('gulp-yaml', function() {
             unsafeFile = new File({
                 path: 'test/unsafe.yml',
                 cwd: 'test',
-                contents: fs.createReadStream('test/unsafe.yml')
+                contents: fs.readFileSync('test/unsafe.yml')
             });
             validFile = new File({
                 path: 'test/valid.yml',

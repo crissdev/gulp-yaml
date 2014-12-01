@@ -30,16 +30,15 @@
   "author": "crissdev <criss.trifan@gmail.com> (http://crissdev.com/)",
   "license": "MIT",
   "devDependencies": {
-    "assert": "~1.1.2",
-    "mocha": "~1.21.4",
-    "should": "~4.0.4",
-    "event-stream": "~3.1.7"
+    "event-stream": "^3.1.7",
+    "mocha": "^2.0.1",
+    "should": "^4.3.0"
   },
   "dependencies": {
-    "through2": "~0.6.2",
-    "gulp-util": "~3.0.1",
-    "js-yaml": "~3.2.2",
-    "extend": "~2.0.0",
+    "through2": "^0.6.3",
+    "gulp-util": "^3.0.1",
+    "js-yaml": "^3.2.3",
+    "extend": "^2.0.0",
     "bufferstreams": "0.0.2"
   }
 }
