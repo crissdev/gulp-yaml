@@ -57,7 +57,7 @@ Default: `null`
 Control spacing in the resulting output. It has the same usage as for [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
 
 
-#### options.replace
+#### options.replacer
 
 Type: `Function` or `Array`
 
