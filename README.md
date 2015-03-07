@@ -1,8 +1,8 @@
 #[gulp](https://github.com/gulpjs/gulp)-yaml
 
-[![NPM version](https://badge.fury.io/js/gulp-yaml.png)](http://badge.fury.io/js/gulp-yaml)
-[![Build Status](https://travis-ci.org/crissdev/gulp-yaml.png?branch=master)](https://travis-ci.org/crissdev/gulp-yaml)
-[![Dependency Status](https://david-dm.org/crissdev/gulp-yaml.png)](https://david-dm.org/crissdev/gulp-yaml)
+[![npm version](https://badge.fury.io/js/gulp-yaml.svg)](http://badge.fury.io/js/gulp-yaml)
+[![Build Status](https://travis-ci.org/crissdev/gulp-yaml.svg?branch=master)](https://travis-ci.org/crissdev/gulp-yaml)
+[![Dependency Status](https://david-dm.org/crissdev/gulp-yaml.svg)](https://david-dm.org/crissdev/gulp-yaml)
 
 > A [Gulp](https://github.com/gulpjs/gulp) plugin to convert [YAML](http://en.wikipedia.org/wiki/YAML) to [JSON](http://en.wikipedia.org/wiki/JSON)
 
