@@ -1,3 +1,10 @@
+# 0.2.4 (2015-03-15)
+
+- target node.js 0.12 and io.js for Travis CI
+- updated js-yaml dependency to its latest version available (3.2.7)
+- option name for `replacer` was not correct in README.md
+
+
 # 0.2.3 (2014-12-01)
 
 - unsafe file was tested only in stream mode
