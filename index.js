@@ -16,7 +16,7 @@ function yaml2json(buffer, options) {
 }
 
 module.exports = function(options) {
-    options = extend({ safe: false, replacer: null, space: null }, options);
+    options = extend({ safe: false, replacer: null, space: null, ext: '.json' }, options);
 
     if (options.pretty) {
         gutil.log(gutil.colors.gray(PLUGIN_NAME +
@@ -35,7 +35,7 @@ module.exports = function(options) {
             }
             try {
                 file.contents = yaml2json(file.contents, options);
-                file.path = gutil.replaceExtension(file.path, '.json');
+                file.path = gutil.replaceExtension(file.path, options.ext);
             }
             catch (error) {
                 this.emit('error', new PluginError(PLUGIN_NAME, error.message));
@@ -56,7 +56,7 @@ module.exports = function(options) {
                     }
                     else {
                         try {
-                            file.path = gutil.replaceExtension(file.path, '.json');
+                            file.path = gutil.replaceExtension(file.path, options.ext);
                             cb(null, yaml2json(buf, options));
                         }
                         catch (error) {
