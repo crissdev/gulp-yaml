@@ -4,7 +4,7 @@
   "description": "Convert YAML to JSON",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --reporter spec"
+    "test": "mocha"
   },
   "files": [
     "index.js",
@@ -27,18 +27,20 @@
     "url": "https://github.com/crissdev/gulp-yaml.git"
   },
   "homepage": "https://github.com/crissdev/gulp-yaml",
-  "author": "crissdev <criss.trifan@gmail.com> (http://crissdev.com/)",
+  "author": {
+    "name": "Cristian Trifan",
+    "email": "criss.trifan@gmail.com",
+    "url": "http://crissdev.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "event-stream": "^3.3.1",
-    "mocha": "^2.2.5",
-    "should": "^7.0.1"
+    "mocha": "^2.2.5"
   },
   "dependencies": {
     "through2": "^2.0.0",
     "gulp-util": "^3.0.6",
     "js-yaml": "^3.3.1",
-    "extend": "^3.0.0",
-    "bufferstreams": "1.0.2"
+    "bufferstreams": "1.1.0"
   }
 }

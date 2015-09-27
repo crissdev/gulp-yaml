@@ -1,12 +1,11 @@
 'use strict';
 
-var through = require('through2'),
-    gutil   = require('gulp-util'),
-    yaml    = require('js-yaml'),
-    extend  = require('extend'),
-    BufferStreams = require('bufferstreams'),
-    PluginError = gutil.PluginError,
-    PLUGIN_NAME = 'gulp-yaml';
+var through         = require('through2');
+var gutil           = require('gulp-util');
+var yaml            = require('js-yaml');
+var BufferStreams   = require('bufferstreams');
+var PluginError     = gutil.PluginError;
+var PLUGIN_NAME     = 'gulp-yaml';
 
 
 function yaml2json(buffer, options) {
@@ -15,59 +14,61 @@ function yaml2json(buffer, options) {
     return new Buffer(JSON.stringify(ymlDocument, options.replacer, options.space));
 }
 
-module.exports = function(options) {
-    options = extend({ safe: false, replacer: null, space: null }, options);
-
-    if (options.pretty) {
-        gutil.log(gutil.colors.gray(PLUGIN_NAME +
-            ': pretty option has been deprecated. Use the new space option instead.'));
-        options.space = 2;
+function mergeOptions(options, userOptions) {
+    if (userOptions) {
+        Object.keys(options).forEach(function(key) {
+            if (typeof userOptions[key] !== 'undefined') {
+                options[key] = userOptions[key];
+            }
+        });
     }
+    return options;
+}
+
+module.exports = function(options) {
+    options = mergeOptions({ safe: false, replacer: null, space: null }, options);
 
     return through.obj(function(file, enc, callback) {
-        var self = this;
-
         if (file.isBuffer()) {
             if (file.contents.length === 0) {
-                this.emit('error', new PluginError(PLUGIN_NAME, 'File ' + file.path +
+                callback(new PluginError(PLUGIN_NAME, 'File ' + file.path +
                     ' is empty. YAML loader cannot load empty content'));
-                return callback();
+                return;
             }
             try {
                 file.contents = yaml2json(file.contents, options);
                 file.path = gutil.replaceExtension(file.path, '.json');
             }
             catch (error) {
-                this.emit('error', new PluginError(PLUGIN_NAME, error.message));
-                return callback();
+                callback(new PluginError(PLUGIN_NAME, error, { showStack: true }));
+                return;
             }
         }
         else if (file.isStream()) {
-            file.contents = file.contents.pipe(new BufferStreams(function(err, buf, cb) {
+            var streamer = new BufferStreams(function(err, buf, cb) {
                 if (err) {
-                    self.emit('error', new PluginError(PLUGIN_NAME, err.message));
+                    callback(new PluginError(PLUGIN_NAME, err, { showStack: true }));
                 }
                 else {
                     if (buf.length === 0) {
-                        var error = new PluginError(PLUGIN_NAME, 'File ' + file.path +
-                                ' is empty. YAML loader cannot load empty content');
-                        self.emit('error', error);
-                        cb(error);
+                        cb(new PluginError(PLUGIN_NAME, 'File ' + file.path +
+                            ' is empty. YAML loader cannot load empty content'));
                     }
                     else {
                         try {
+                            var parsed = yaml2json(buf, options);
                             file.path = gutil.replaceExtension(file.path, '.json');
-                            cb(null, yaml2json(buf, options));
+                            cb(null, parsed);
                         }
                         catch (error) {
-                            self.emit('error', new PluginError(PLUGIN_NAME, error.message));
-                            cb(error);
+                            cb(new PluginError(PLUGIN_NAME, error, { showStack: true }));
                         }
                     }
                 }
-            }));
+            });
+            streamer.on('error', callback);
+            file.contents = file.contents.pipe(streamer);
         }
-        this.push(file);
-        return callback();
+        callback(null, file);
     });
 };
