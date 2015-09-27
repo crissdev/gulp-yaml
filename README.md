@@ -66,17 +66,6 @@ Default: `null`
 Further transform the resulting output. It has the same usage as for [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
 
 
-#### options.pretty
-
-Type: `Boolean`
-
-Default: `false`
-
-Output pretty (indented) resulting JSON - using 2 spaces. _options.space_ is ignored if this flag is set to true.
-
-**This option has been deprecated. Use _space_ option instead**
-
-
 ## License
 
 MIT © [Cristian Trifan](http://crissdev.com)
