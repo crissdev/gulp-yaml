@@ -38,9 +38,10 @@
     "mocha": "^2.2.5"
   },
   "dependencies": {
-    "through2": "^2.0.0",
+    "bufferstreams": "1.1.0",
     "gulp-util": "^3.0.6",
     "js-yaml": "^3.3.1",
-    "bufferstreams": "1.1.0"
+    "through2": "^2.0.0",
+    "xtend": "^4.0.0"
   }
 }
