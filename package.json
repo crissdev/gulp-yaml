@@ -34,7 +34,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "event-stream": "^3.3.1",
+    "event-stream": "^3.3.2",
     "mocha": "^2.2.5"
   },
   "dependencies": {
