@@ -1,3 +1,21 @@
+# 1.0.0 (2015-10-17)
+
+### Features
+
+- add support for `schema` option. The option must be specified as string, lower or upper case.
+- add support for `filename` option. The default value will be set to the path of file being processed.
+
+### Breaking changes
+
+- `safe` option is `true` by default
+- removed `pretty` option. Use the `space` option instead (e.g `space: 2`). This means more control of the output.
+
+### Maintenance
+
+- updated js-yaml dependency to its latest version available (3.4.3)
+- remove iojs and use node stable version instead
+
+
 # 0.2.4 (2015-03-15)
 
 - target node.js 0.12 and io.js for Travis CI
