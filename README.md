@@ -77,6 +77,15 @@ Default: `DEFAULT_SAFE_SCHEMA` or `DEFAULT_FULL_SCHEMA`
 Specifies what schema to use. Valid values are the same that [js-yaml](https://github.com/nodeca/js-yaml) supports, except they are received as strings (lowercase or uppercase). See the example in the Usage section of this README. The default schema is chosen using the `safe` option.
 
 
+#### options.filename
+
+Type `String`
+
+Default: the path of the file processed
+
+String to be used as a file path in error/warning messages.
+
+
 ## License
 
 MIT © [Cristian Trifan](http://crissdev.com)
