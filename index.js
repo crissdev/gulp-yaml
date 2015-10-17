@@ -11,7 +11,7 @@ var PLUGIN_NAME   = 'gulp-yaml';
 
 function yaml2json(buffer, options) {
   var contents = buffer.toString('utf8');
-  var ymlOptions = {schema: options.schema, filename: options.filename, onWarning: options.onWarning};
+  var ymlOptions = {schema: options.schema, filename: options.filename};
   var ymlDocument = options.safe ? yaml.safeLoad(contents, ymlOptions) : yaml.load(contents, ymlOptions);
   return new Buffer(JSON.stringify(ymlDocument, options.replacer, options.space));
 }
