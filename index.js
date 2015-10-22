@@ -38,13 +38,19 @@ function parseSchema(schema) {
 }
 
 module.exports = function(options) {
-  return through.obj(function(file, enc, callback) {
-    options = xtend({safe: true, replacer: null, space: null, filename: file.path}, options);
-    if (!options.schema) {
-      options.schema = options.safe ? yaml.DEFAULT_SAFE_SCHEMA : yaml.DEFAULT_FULL_SCHEMA;
-    }
-    else {
+  options = xtend({safe: true, replacer: null, space: null}, options);
+  var providedFilename = options.filename;
+
+  if (!options.schema) {
+    options.schema = options.safe ? yaml.DEFAULT_SAFE_SCHEMA : yaml.DEFAULT_FULL_SCHEMA;
+  }
+  else {
       options.schema = parseSchema(options.schema);
+  }
+
+  return through.obj(function(file, enc, callback) {
+    if (!providedFilename) {
+      options.filename = file.path;
     }
 
     if (file.isBuffer()) {
