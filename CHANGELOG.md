@@ -1,3 +1,9 @@
+# 1.0.1 (2015-10-22)
+
+### Bug Fixes
+
+- error thrown when multiple files are processed [#4](https://github.com/crissdev/gulp-yaml/issues/4)
+
 # 1.0.0 (2015-10-17)
 
 ### Features
