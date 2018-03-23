@@ -1,11 +1,11 @@
 'use strict';
 
+var replaceExt    = require('replace-ext');
 var through       = require('through2');
-var gutil         = require('gulp-util');
 var yaml          = require('js-yaml');
 var xtend         = require('xtend');
 var BufferStreams = require('bufferstreams');
-var PluginError   = gutil.PluginError;
+var PluginError   = require('plugin-error');
 var PLUGIN_NAME   = 'gulp-yaml';
 
 
@@ -61,7 +61,7 @@ module.exports = function(options) {
       }
       try {
         file.contents = yaml2json(file.contents, options);
-        file.path = gutil.replaceExtension(file.path, '.json');
+        file.path = replaceExt(file.path, '.json');
       }
       catch (error) {
         this.emit('error', new PluginError(PLUGIN_NAME, error, {showStack: true}));
@@ -82,7 +82,7 @@ module.exports = function(options) {
           else {
             try {
               var parsed = yaml2json(buf, options);
-              file.path = gutil.replaceExtension(file.path, '.json');
+              file.path = replaceExt(file.path, '.json');
               cb(null, parsed);
             }
             catch (error) {
