@@ -1,8 +1,8 @@
 /*global describe, it*/
 
 var yaml        = require('./');
-var File        = require('gulp-util').File;
-var PluginError = require('gulp-util').PluginError;
+var File        = require('vinyl');
+var PluginError = require('plugin-error');
 var es          = require('event-stream');
 var assert      = require('assert');
 var Readable    = require('stream').Readable;
