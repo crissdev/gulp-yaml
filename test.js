@@ -1,8 +1,8 @@
 /*global describe, it*/
 
 var yaml        = require('./');
-var File        = require('gulp-util').File;
-var PluginError = require('gulp-util').PluginError;
+var Vinyl       = require('vinyl');
+var PluginError = require('plugin-error');
 var es          = require('event-stream');
 var assert      = require('assert');
 var Readable    = require('stream').Readable;
@@ -20,7 +20,7 @@ describe('gulp-yaml', function() {
       else if (Array.isArray(contents)) {
         contents = new Buffer(contents.join('\n'), 'utf8');
       }
-      return new File({
+      return new Vinyl({
         cwd: './',
         base: './test/',
         path: './test/' + (filename || 'mock.yml'),
@@ -134,7 +134,7 @@ describe('gulp-yaml', function() {
         callback.apply(this, arguments);
         this.push(null);
       };
-      return new File({
+      return new Vinyl({
         cwd: './',
         base: './test/',
         path: './test/' + (filename || 'mock.yml'),
