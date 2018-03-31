@@ -1,4 +1,4 @@
-# [gulp](https://github.com/gulpjs/gulp)-yaml
+# gulp-yaml
 
 [![npm version](https://badge.fury.io/js/gulp-yaml.svg)](http://badge.fury.io/js/gulp-yaml)
 [![Build Status](https://travis-ci.org/crissdev/gulp-yaml.svg?branch=master)](https://travis-ci.org/crissdev/gulp-yaml)
@@ -10,7 +10,7 @@
 ## Install
 
 ```sh
-npm install --save-dev gulp-yaml
+npm install gulp-yaml --save-dev
 ```
 
 ## Usage
