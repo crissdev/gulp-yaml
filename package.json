@@ -30,12 +30,12 @@
   "author": {
     "name": "Cristian Trifan",
     "email": "criss.trifan@gmail.com",
-    "url": "http://crissdev.com"
+    "url": "https://crissdev.com"
   },
   "license": "MIT",
   "devDependencies": {
-    "event-stream": "^3.3.2",
-    "mocha": "^2.2.5",
+    "event-stream": "^3.3.4",
+    "mocha": "^5.0.5",
     "vinyl": "^2.1.0"
   },
   "dependencies": {
