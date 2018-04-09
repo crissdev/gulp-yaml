@@ -1,25 +1,21 @@
-/*global describe, it*/
+'use strict';
 
-var yaml        = require('./');
-var File        = require('vinyl');
+var assert = require('assert');
+var Readable = require('stream').Readable;
+var File = require('vinyl');
 var PluginError = require('plugin-error');
-var es          = require('event-stream');
-var assert      = require('assert');
-var Readable    = require('stream').Readable;
-
+var es = require('event-stream');
+var yaml = require('./');
 
 describe('gulp-yaml', function() {
-  'use strict';
-
   describe('in buffer mode', function() {
-
     var _createFile = function(contents, filename) {
-      if (typeof contents === 'string') {
-        contents = new Buffer(contents, 'utf8');
+      if (Array.isArray(contents)) {
+        contents = contents.join('\n');
       }
-      else if (Array.isArray(contents)) {
-        contents = new Buffer(contents.join('\n'), 'utf8');
-      }
+
+      contents = Buffer.from(contents);
+
       return new File({
         cwd: './',
         base: './test/',
@@ -29,7 +25,7 @@ describe('gulp-yaml', function() {
     };
 
     var _fileContents = function(file) {
-      return file.contents ? file.contents.toString('utf8') : null;
+      return file.contents ? file.contents.toString() : null;
     };
 
     it('should convert to json', function(done) {
@@ -97,7 +93,7 @@ describe('gulp-yaml', function() {
       stream.end();
     });
 
-    it('should use the specified schema ans reject input', function(done) {
+    it('should use the specified schema and reject input', function(done) {
       var stream = yaml({schema: 'FAILSAFE_SCHEMA'});
 
       stream.once('error', function(err) {
@@ -123,7 +119,6 @@ describe('gulp-yaml', function() {
   });
 
   describe('in stream mode', function() {
-
     var _createFile = function(filename, callback) {
       if (arguments.length === 1) {
         callback = arguments[0];
@@ -146,8 +141,8 @@ describe('gulp-yaml', function() {
       var stream = yaml();
 
       stream.once('data', function(file) {
-        file.contents.pipe(es.wait(function(err, data) {
-          assert.equal(data.toString('utf8'), '{"root":{"key":"value"}}');
+        file.contents.pipe(es.wait(function(_, data) {
+          assert.equal(data.toString(), '{"root":{"key":"value"}}');
           assert.equal(file.extname, '.json');
           done();
         }));
@@ -216,7 +211,7 @@ describe('gulp-yaml', function() {
       stream.end();
     });
 
-    it('should use the specified schema ans reject input', function(done) {
+    it('should use the specified schema and reject input', function(done) {
       var stream = yaml({schema: 'FAILSAFE_SCHEMA'});
 
       stream.once('error', function(err) {
@@ -234,8 +229,8 @@ describe('gulp-yaml', function() {
       var stream = yaml({schema: 'JSON_SCHEMA', safe: false});
 
       stream.once('data', function(file) {
-        file.contents.pipe(es.wait(function(err, data) {
-          assert.equal(data.toString('utf8'), '{"key":null}');
+        file.contents.pipe(es.wait(function(_, data) {
+          assert.equal(data.toString(), '{"key":null}');
           assert.equal(file.extname, '.json');
           done();
         }));
@@ -246,6 +241,5 @@ describe('gulp-yaml', function() {
       }));
       stream.end();
     });
-
   });
 });
