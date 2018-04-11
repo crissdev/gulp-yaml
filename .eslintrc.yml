@@ -5,3 +5,7 @@ root: true
 
 env:
   mocha: true
+
+rules:
+  no-var: 2
+  prefer-const: 2

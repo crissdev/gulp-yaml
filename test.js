@@ -1,15 +1,15 @@
 'use strict'
 
-var assert = require('assert')
-var Readable = require('stream').Readable
-var File = require('vinyl')
-var PluginError = require('plugin-error')
-var es = require('event-stream')
-var yaml = require('./')
+const assert = require('assert')
+const Readable = require('stream').Readable
+const File = require('vinyl')
+const PluginError = require('plugin-error')
+const es = require('event-stream')
+const yaml = require('./')
 
 describe('gulp-yaml', function () {
   describe('in buffer mode', function () {
-    var _createFile = function (contents, filename) {
+    const _createFile = function (contents, filename) {
       if (Array.isArray(contents)) {
         contents = contents.join('\n')
       }
@@ -24,12 +24,12 @@ describe('gulp-yaml', function () {
       })
     }
 
-    var _fileContents = function (file) {
+    const _fileContents = function (file) {
       return file.contents ? file.contents.toString() : null
     }
 
     it('should convert to json', function (done) {
-      var stream = yaml()
+      const stream = yaml()
 
       stream.once('data', function (file) {
         assert.equal(_fileContents(file), '{"root":{"key":"value"}}')
@@ -42,7 +42,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if empty file', function (done) {
-      var stream = yaml()
+      const stream = yaml()
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -54,7 +54,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if not well formatted', function (done) {
-      var stream = yaml()
+      const stream = yaml()
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -70,7 +70,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if loading untrusted document with safe option enabled', function (done) {
-      var stream = yaml({safe: true})
+      const stream = yaml({safe: true})
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -82,7 +82,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use safe loading by default', function (done) {
-      var stream = yaml({safe: true})
+      const stream = yaml({safe: true})
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -94,7 +94,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and reject input', function (done) {
-      var stream = yaml({schema: 'FAILSAFE_SCHEMA'})
+      const stream = yaml({schema: 'FAILSAFE_SCHEMA'})
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -106,7 +106,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and accept input', function (done) {
-      var stream = yaml({schema: 'JSON_SCHEMA', safe: false})
+      const stream = yaml({schema: 'JSON_SCHEMA', safe: false})
 
       stream.once('data', function (file) {
         assert.equal(_fileContents(file), '{"key":null}')
@@ -119,12 +119,12 @@ describe('gulp-yaml', function () {
   })
 
   describe('in stream mode', function () {
-    var _createFile = function (filename, callback) {
+    const _createFile = function (filename, callback) {
       if (arguments.length === 1) {
         callback = arguments[0]
         filename = null
       }
-      var stream = new Readable()
+      const stream = new Readable()
       stream._read = function () {
         callback.apply(this, arguments)
         this.push(null)
@@ -138,7 +138,7 @@ describe('gulp-yaml', function () {
     }
 
     it('should convert to json', function (done) {
-      var stream = yaml()
+      const stream = yaml()
 
       stream.once('data', function (file) {
         file.contents.pipe(es.wait(function (_, data) {
@@ -156,7 +156,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if empty file', function (done) {
-      var stream = yaml()
+      const stream = yaml()
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -168,7 +168,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if not well formatted', function (done) {
-      var stream = yaml()
+      const stream = yaml()
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -184,7 +184,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if loading untrusted document with safe option enabled', function (done) {
-      var stream = yaml({safe: true})
+      const stream = yaml({safe: true})
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -198,7 +198,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use safe loading by default', function (done) {
-      var stream = yaml()
+      const stream = yaml()
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -212,7 +212,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and reject input', function (done) {
-      var stream = yaml({schema: 'FAILSAFE_SCHEMA'})
+      const stream = yaml({schema: 'FAILSAFE_SCHEMA'})
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -226,7 +226,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and accept input', function (done) {
-      var stream = yaml({schema: 'JSON_SCHEMA', safe: false})
+      const stream = yaml({schema: 'JSON_SCHEMA', safe: false})
 
       stream.once('data', function (file) {
         file.contents.pipe(es.wait(function (_, data) {

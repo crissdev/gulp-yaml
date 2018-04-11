@@ -1,24 +1,24 @@
 'use strict'
 
-var yaml = require('js-yaml')
-var through = require('through2')
-var BufferStreams = require('bufferstreams')
-var replaceExt = require('replace-ext')
-var PluginError = require('plugin-error')
+const yaml = require('js-yaml')
+const through = require('through2')
+const BufferStreams = require('bufferstreams')
+const replaceExt = require('replace-ext')
+const PluginError = require('plugin-error')
 
-var PLUGIN_NAME = 'gulp-yaml'
+const PLUGIN_NAME = 'gulp-yaml'
 
 module.exports = function (options) {
   options = options || {}
   options.schema = getSchema(options)
   options.ext = options.ext || '.json'
 
-  var providedFilename = options.filename
+  const providedFilename = options.filename
 
   return through.obj(function (file, enc, callback) {
     options.filename = providedFilename || file.path
 
-    var stream = this
+    const stream = this
 
     file.contents = getFileContents(file, options, stream, callback)
 
@@ -34,7 +34,7 @@ function getSchema (options) {
 
   if (options.schema instanceof yaml.Schema) { return options.schema }
 
-  var schemaName = typeof options.schema === 'string' ? options.schema.toUpperCase() : options.schema
+  const schemaName = typeof options.schema === 'string' ? options.schema.toUpperCase() : options.schema
   if (yaml[schemaName] !== undefined) { return yaml[schemaName] }
 
   throw getError('Schema ' + schemaName + ' is not valid')
@@ -55,7 +55,7 @@ function getFileContents (file, options, stream, callback) {
 }
 
 function getBufferContents (file, options, stream, callback) {
-  var parsed = convertYaml(file, file.contents, options)
+  const parsed = convertYaml(file, file.contents, options)
 
   if (parsed instanceof PluginError) {
     stream.emit('error', parsed)
@@ -66,13 +66,13 @@ function getBufferContents (file, options, stream, callback) {
 }
 
 function getStreamContents (file, options, stream) {
-  var streamer = new BufferStreams(function (err, buf, callback) {
+  const streamer = new BufferStreams(function (err, buf, callback) {
     if (err) {
       stream.emit('error', getError(err))
       return callback()
     }
 
-    var parsed = convertYaml(file, buf, options)
+    const parsed = convertYaml(file, buf, options)
 
     if (parsed instanceof PluginError) {
       stream.emit('error', parsed)
@@ -99,8 +99,8 @@ function convertYaml (file, buf, options) {
 }
 
 function yaml2json (buffer, options) {
-  var ymlDocument = options.safe ? yaml.safeLoad(buffer, options) : yaml.load(buffer, options)
-  var jsonValue = JSON.stringify(ymlDocument, options.replacer, options.space)
+  const ymlDocument = options.safe ? yaml.safeLoad(buffer, options) : yaml.load(buffer, options)
+  const jsonValue = JSON.stringify(ymlDocument, options.replacer, options.space)
   return Buffer.from(jsonValue)
 }
 
