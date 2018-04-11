@@ -1,251 +1,245 @@
-/*global describe, it*/
+'use strict'
 
-var yaml        = require('./');
-var File        = require('gulp-util').File;
-var PluginError = require('gulp-util').PluginError;
-var es          = require('event-stream');
-var assert      = require('assert');
-var Readable    = require('stream').Readable;
+const assert = require('assert')
+const Readable = require('stream').Readable
+const File = require('vinyl')
+const PluginError = require('plugin-error')
+const es = require('event-stream')
+const yaml = require('./')
 
-
-describe('gulp-yaml', function() {
-  'use strict';
-
-  describe('in buffer mode', function() {
-
-    var _createFile = function(contents, filename) {
-      if (typeof contents === 'string') {
-        contents = new Buffer(contents, 'utf8');
+describe('gulp-yaml', function () {
+  describe('in buffer mode', function () {
+    const _createFile = function (contents, filename) {
+      if (Array.isArray(contents)) {
+        contents = contents.join('\n')
       }
-      else if (Array.isArray(contents)) {
-        contents = new Buffer(contents.join('\n'), 'utf8');
-      }
+
+      contents = Buffer.from(contents)
+
       return new File({
         cwd: './',
         base: './test/',
         path: './test/' + (filename || 'mock.yml'),
         contents: contents
-      });
-    };
+      })
+    }
 
-    var _fileContents = function(file) {
-      return file.contents ? file.contents.toString('utf8') : null;
-    };
+    const _fileContents = function (file) {
+      return file.contents ? file.contents.toString() : null
+    }
 
-    it('should convert to json', function(done) {
-      var stream = yaml();
+    it('should convert to json', function (done) {
+      const stream = yaml()
 
-      stream.once('data', function(file) {
-        assert.equal(_fileContents(file), '{"root":{"key":"value"}}');
-        assert.equal(file.extname, '.json');
-        done();
-      });
+      stream.once('data', function (file) {
+        assert.equal(_fileContents(file), '{"root":{"key":"value"}}')
+        assert.equal(file.extname, '.json')
+        done()
+      })
 
-      stream.write(_createFile(['root:', '  key: value']));
-      stream.end();
-    });
+      stream.write(_createFile(['root:', '  key: value']))
+      stream.end()
+    })
 
-    it('should throw if empty file', function(done) {
-      var stream = yaml();
+    it('should throw if empty file', function (done) {
+      const stream = yaml()
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile(''));
-      stream.end();
-    });
+      stream.write(_createFile(''))
+      stream.end()
+    })
 
-    it('should throw if not well formatted', function(done) {
-      var stream = yaml();
+    it('should throw if not well formatted', function (done) {
+      const stream = yaml()
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
       stream.write(_createFile([
         '$',
         'missing:',
         '  something?'
-      ]));
-      stream.end();
-    });
+      ]))
+      stream.end()
+    })
 
-    it('should throw if loading untrusted document with safe option enabled', function(done) {
-      var stream = yaml({safe: true});
+    it('should throw if loading untrusted document with safe option enabled', function (done) {
+      const stream = yaml({safe: true})
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"'));
-      stream.end();
-    });
+      stream.write(_createFile('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"'))
+      stream.end()
+    })
 
-    it('should use safe loading by default', function(done) {
-      var stream = yaml({safe: true});
+    it('should use safe loading by default', function (done) {
+      const stream = yaml({safe: true})
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"'));
-      stream.end();
-    });
+      stream.write(_createFile('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"'))
+      stream.end()
+    })
 
-    it('should use the specified schema ans reject input', function(done) {
-      var stream = yaml({schema: 'FAILSAFE_SCHEMA'});
+    it('should use the specified schema and reject input', function (done) {
+      const stream = yaml({schema: 'FAILSAFE_SCHEMA'})
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile('---\nkey: !!null'));
-      stream.end();
-    });
+      stream.write(_createFile('---\nkey: !!null'))
+      stream.end()
+    })
 
-    it('should use the specified schema and accept input', function(done) {
-      var stream = yaml({schema: 'JSON_SCHEMA', safe: false});
+    it('should use the specified schema and accept input', function (done) {
+      const stream = yaml({schema: 'JSON_SCHEMA', safe: false})
 
-      stream.once('data', function(file) {
-        assert.equal(_fileContents(file), '{"key":null}');
-        done();
-      });
+      stream.once('data', function (file) {
+        assert.equal(_fileContents(file), '{"key":null}')
+        done()
+      })
 
-      stream.write(_createFile('---\nkey: !!null'));
-      stream.end();
-    });
-  });
+      stream.write(_createFile('---\nkey: !!null'))
+      stream.end()
+    })
+  })
 
-  describe('in stream mode', function() {
-
-    var _createFile = function(filename, callback) {
+  describe('in stream mode', function () {
+    const _createFile = function (filename, callback) {
       if (arguments.length === 1) {
-        callback = arguments[0];
-        filename = null;
+        callback = arguments[0]
+        filename = null
       }
-      var stream = new Readable();
-      stream._read = function() {
-        callback.apply(this, arguments);
-        this.push(null);
-      };
+      const stream = new Readable()
+      stream._read = function () {
+        callback.apply(this, arguments)
+        this.push(null)
+      }
       return new File({
         cwd: './',
         base: './test/',
         path: './test/' + (filename || 'mock.yml'),
         contents: stream
-      });
-    };
+      })
+    }
 
-    it('should convert to json', function(done) {
-      var stream = yaml();
+    it('should convert to json', function (done) {
+      const stream = yaml()
 
-      stream.once('data', function(file) {
-        file.contents.pipe(es.wait(function(err, data) {
-          assert.equal(data.toString('utf8'), '{"root":{"key":"value"}}');
-          assert.equal(file.extname, '.json');
-          done();
-        }));
-      });
+      stream.once('data', function (file) {
+        file.contents.pipe(es.wait(function (_, data) {
+          assert.equal(data.toString(), '{"root":{"key":"value"}}')
+          assert.equal(file.extname, '.json')
+          done()
+        }))
+      })
 
-      stream.write(_createFile(function() {
-        this.push('root:\n');
-        this.push('  key: value\n');
-      }));
-      stream.end();
-    });
+      stream.write(_createFile(function () {
+        this.push('root:\n')
+        this.push('  key: value\n')
+      }))
+      stream.end()
+    })
 
-    it('should throw if empty file', function(done) {
-      var stream = yaml();
+    it('should throw if empty file', function (done) {
+      const stream = yaml()
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile(function() { }));
-      stream.end();
-    });
+      stream.write(_createFile(function () { }))
+      stream.end()
+    })
 
-    it('should throw if not well formatted', function(done) {
-      var stream = yaml();
+    it('should throw if not well formatted', function (done) {
+      const stream = yaml()
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile(function() {
-        this.push('$\n');
-        this.push('missing:\n');
-        this.push('  something?\n');
-      }));
-      stream.end();
-    });
+      stream.write(_createFile(function () {
+        this.push('$\n')
+        this.push('missing:\n')
+        this.push('  something?\n')
+      }))
+      stream.end()
+    })
 
-    it('should throw if loading untrusted document with safe option enabled', function(done) {
-      var stream = yaml({safe: true});
+    it('should throw if loading untrusted document with safe option enabled', function (done) {
+      const stream = yaml({safe: true})
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile(function() {
-        this.push('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"');
-      }));
-      stream.end();
-    });
+      stream.write(_createFile(function () {
+        this.push('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"')
+      }))
+      stream.end()
+    })
 
-    it('should use safe loading by default', function(done) {
-      var stream = yaml();
+    it('should use safe loading by default', function (done) {
+      const stream = yaml()
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile(function() {
-        this.push('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"');
-      }));
-      stream.end();
-    });
+      stream.write(_createFile(function () {
+        this.push('"toString": !<tag:yaml.org,2002:js/function> "function (){very_evil_thing();}"')
+      }))
+      stream.end()
+    })
 
-    it('should use the specified schema ans reject input', function(done) {
-      var stream = yaml({schema: 'FAILSAFE_SCHEMA'});
+    it('should use the specified schema and reject input', function (done) {
+      const stream = yaml({schema: 'FAILSAFE_SCHEMA'})
 
-      stream.once('error', function(err) {
-        assert.ok(err instanceof PluginError);
-        done();
-      });
+      stream.once('error', function (err) {
+        assert.ok(err instanceof PluginError)
+        done()
+      })
 
-      stream.write(_createFile(function() {
-        this.push('---\nkey: !!null');
-      }));
-      stream.end();
-    });
+      stream.write(_createFile(function () {
+        this.push('---\nkey: !!null')
+      }))
+      stream.end()
+    })
 
-    it('should use the specified schema and accept input', function(done) {
-      var stream = yaml({schema: 'JSON_SCHEMA', safe: false});
+    it('should use the specified schema and accept input', function (done) {
+      const stream = yaml({schema: 'JSON_SCHEMA', safe: false})
 
-      stream.once('data', function(file) {
-        file.contents.pipe(es.wait(function(err, data) {
-          assert.equal(data.toString('utf8'), '{"key":null}');
-          assert.equal(file.extname, '.json');
-          done();
-        }));
-      });
+      stream.once('data', function (file) {
+        file.contents.pipe(es.wait(function (_, data) {
+          assert.equal(data.toString(), '{"key":null}')
+          assert.equal(file.extname, '.json')
+          done()
+        }))
+      })
 
-      stream.write(_createFile(function() {
-        this.push('---\nkey: !!null');
-      }));
-      stream.end();
-    });
-
-  });
-});
+      stream.write(_createFile(function () {
+        this.push('---\nkey: !!null')
+      }))
+      stream.end()
+    })
+  })
+})

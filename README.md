@@ -1,5 +1,6 @@
-# [gulp](https://github.com/gulpjs/gulp)-yaml
+# gulp-yaml
 
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![npm version](https://badge.fury.io/js/gulp-yaml.svg)](http://badge.fury.io/js/gulp-yaml)
 [![Build Status](https://travis-ci.org/crissdev/gulp-yaml.svg?branch=master)](https://travis-ci.org/crissdev/gulp-yaml)
 [![Dependency Status](https://david-dm.org/crissdev/gulp-yaml.svg)](https://david-dm.org/crissdev/gulp-yaml)
@@ -10,7 +11,7 @@
 ## Install
 
 ```sh
-npm install --save-dev gulp-yaml
+npm install gulp-yaml --save-dev
 ```
 
 ## Usage
@@ -79,12 +80,38 @@ Specifies what schema to use. Valid values are the same that [js-yaml](https://g
 
 #### options.filename
 
-Type `String`
+Type: `String`
 
 Default: the path of the file processed
 
 String to be used as a file path in error/warning messages.
 
+#### options.ext
+
+Type: `String`
+
+Default: `.json`
+
+File extension of the generated files.
+
+#### options.json
+
+Type: `Boolean`
+
+Default: `false`
+
+Compatibility with JSON.parse behaviour.
+If true, then duplicate keys in a mapping will override values rather than
+throwing an error.
+
+#### options.onWarning
+
+Type: `Function`
+
+Default: `null`
+
+Function to call on warning messages.
+Loader will throw on warnings if this function is not provided.
 
 ## License
 
