@@ -1,3 +1,35 @@
+# 2.0.0 (2018-04-11)
+
+### User features
+
+Add `options.ext` to specify the filename extension (defaults to `.json`).
+
+Add `options.json` and `options.onWarning` from `js-yaml`.
+
+Add support for `file.contents` being `null`.
+
+### Documentation
+
+Improve `README.md`.
+
+### Dependencies
+
+Remove `gulp-util` deprecated dependency.
+
+Upgrade `js-yaml` from `3.4.3` to `3.11.0`
+
+Upgrade `bufferstreams` from `1.1.0` to `2.0.0`
+
+Add `package-lock.json`
+
+### Linting
+
+Add linting with ESLint. It is based on Standard JavaScript.
+
+### Refactoring
+
+Major code refactoring.
+
 # 1.0.1 (2015-10-22)
 
 ### Bug Fixes
