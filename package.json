@@ -11,7 +11,7 @@
     "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=4.8.7"
+    "node": ">=6.9.5"
   },
   "keywords": [
     "gulpplugin",
