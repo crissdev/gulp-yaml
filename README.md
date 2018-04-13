@@ -3,6 +3,7 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![npm version](https://badge.fury.io/js/gulp-yaml.svg)](http://badge.fury.io/js/gulp-yaml)
 [![Build Status](https://travis-ci.org/crissdev/gulp-yaml.svg?branch=master)](https://travis-ci.org/crissdev/gulp-yaml)
+[![Build status](https://ci.appveyor.com/api/projects/status/ncljdqu2v5d611p5/branch/master?svg=true&passingText=master%20-%20OK)](https://ci.appveyor.com/project/crissdev/gulp-yaml/branch/master)
 [![Dependency Status](https://david-dm.org/crissdev/gulp-yaml.svg)](https://david-dm.org/crissdev/gulp-yaml)
 
 > A [Gulp](https://github.com/gulpjs/gulp) plugin to convert [YAML](http://en.wikipedia.org/wiki/YAML) to [JSON](http://en.wikipedia.org/wiki/JSON) using [js-yaml](https://github.com/nodeca/js-yaml).
@@ -17,7 +18,7 @@ npm install gulp-yaml --save-dev
 ## Usage
 
 ```js
-var yaml = require('gulp-yaml');
+const yaml = require('gulp-yaml');
 
 gulp.src('./src/*.yml')
   .pipe(yaml({ schema: 'DEFAULT_SAFE_SCHEMA' }))
@@ -92,7 +93,7 @@ Type: `String`
 
 Default: `.json`
 
-File extension of the generated files.
+File extension of the generated file.
 
 #### options.json
 
@@ -115,4 +116,4 @@ Loader will throw on warnings if this function is not provided.
 
 ## License
 
-MIT © [Cristian Trifan](http://crissdev.com)
+MIT © [Cristian Trifan](https://crissdev.com)
