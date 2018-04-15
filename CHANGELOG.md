@@ -1,3 +1,9 @@
+# 2.0.1 (2018-04-15)
+
+### Bug Fixes
+
+- plugin mutates provided options ([5be4a64](https://github.com/crissdev/gulp-yaml/commit/5be4a6451611187de0b0179642e35fccff23a9ff))
+
 # 2.0.0 (2018-04-12)
 
 ### User features
