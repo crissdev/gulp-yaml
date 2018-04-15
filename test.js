@@ -116,6 +116,19 @@ describe('gulp-yaml', function () {
       stream.write(_createFile('---\nkey: !!null'))
       stream.end()
     })
+
+    it('does not mutate provided options', function (done) {
+      const options = {}
+      const stream = yaml(options)
+
+      stream.once('data', function () {
+        assert.equal(Object.keys(options).length, 0)
+        done()
+      })
+
+      stream.write(_createFile(['root:', '  key: value']))
+      stream.end()
+    })
   })
 
   describe('in stream mode', function () {
@@ -238,6 +251,24 @@ describe('gulp-yaml', function () {
 
       stream.write(_createFile(function () {
         this.push('---\nkey: !!null')
+      }))
+      stream.end()
+    })
+
+    it('does not mutate provided options', function (done) {
+      const options = {}
+      const stream = yaml(options)
+
+      stream.once('data', function (file) {
+        file.contents.pipe(es.wait(function () {
+          assert.equal(Object.keys(options).length, 0)
+          done()
+        }))
+      })
+
+      stream.write(_createFile(function () {
+        this.push('root:\n')
+        this.push('  key: value\n')
       }))
       stream.end()
     })

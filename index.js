@@ -5,11 +5,12 @@ const through = require('through2')
 const BufferStreams = require('bufferstreams')
 const replaceExt = require('replace-ext')
 const PluginError = require('plugin-error')
+const assign = require('object-assign')
 
 const PLUGIN_NAME = 'gulp-yaml'
 
 module.exports = function (options) {
-  options = options || {}
+  options = assign({}, options)
   options.schema = getSchema(options)
   options.ext = options.ext || '.json'
 
