@@ -4,7 +4,7 @@
   "description": "Convert YAML to JSON",
   "main": "index.js",
   "scripts": {
-    "test": "eslint --max-warnings 0 . && mocha"
+    "test": "nsp check && eslint --max-warnings 0 . && mocha"
   },
   "files": [
     "index.js",
@@ -42,7 +42,8 @@
     "eslint-plugin-standard": "^3.0.1",
     "event-stream": "^3.3.4",
     "mocha": "^5.1.1",
-    "vinyl": "^2.1.0"
+    "vinyl": "^2.1.0",
+    "nsp": "^3.2.1"
   },
   "dependencies": {
     "bufferstreams": "^2.0.0",
