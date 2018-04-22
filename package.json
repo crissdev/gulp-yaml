@@ -45,7 +45,7 @@
     "vinyl": "^2.1.0"
   },
   "dependencies": {
-    "bufferstreams": "^2.0.0",
+    "bufferstreams": "git+https://github.com/ehmicky/bufferstreams.git",
     "js-yaml": "^3.11.0",
     "object-assign": "^4.1.1",
     "plugin-error": "^1.0.1",
