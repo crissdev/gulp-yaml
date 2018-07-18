@@ -20,8 +20,9 @@ module.exports = function (options) {
     options.filename = providedFilename || file.path
 
     const stream = this
+    const result = getFileContents(file, options, stream, callback)
 
-    file.contents = getFileContents(file, options, stream, callback)
+    if (result) file.contents = result
 
     stream.push(file)
     callback()
