@@ -32,8 +32,8 @@ describe('gulp-yaml', function () {
       const stream = yaml()
 
       stream.once('data', function (file) {
-        assert.equal(_fileContents(file), '{"root":{"key":"value"}}')
-        assert.equal(file.extname, '.json')
+        assert.strictEqual(_fileContents(file), '{"root":{"key":"value"}}')
+        assert.strictEqual(file.extname, '.json')
         done()
       })
 
@@ -53,11 +53,20 @@ describe('gulp-yaml', function () {
       stream.end()
     })
 
-    it('should throw if not well formatted', function (done) {
+    it('should return empty content on invalid yaml and emit error in underlying stream', function (done) {
       const stream = yaml()
+      let count = 0
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
+        count++
+      })
+      stream.once('data', function (file) {
+        assert.strictEqual(file.contents.toString(), '')
+        count++
+      })
+      stream.once('end', function () {
+        assert.strictEqual(count, 2)
         done()
       })
 
@@ -109,7 +118,7 @@ describe('gulp-yaml', function () {
       const stream = yaml({schema: 'JSON_SCHEMA', safe: false})
 
       stream.once('data', function (file) {
-        assert.equal(_fileContents(file), '{"key":null}')
+        assert.strictEqual(_fileContents(file), '{"key":null}')
         done()
       })
 
@@ -122,7 +131,7 @@ describe('gulp-yaml', function () {
       const stream = yaml(options)
 
       stream.once('data', function () {
-        assert.equal(Object.keys(options).length, 0)
+        assert.strictEqual(Object.keys(options).length, 0)
         done()
       })
 
@@ -155,8 +164,8 @@ describe('gulp-yaml', function () {
 
       stream.once('data', function (file) {
         file.contents.pipe(es.wait(function (_, data) {
-          assert.equal(data.toString(), '{"root":{"key":"value"}}')
-          assert.equal(file.extname, '.json')
+          assert.strictEqual(data.toString(), '{"root":{"key":"value"}}')
+          assert.strictEqual(file.extname, '.json')
           done()
         }))
       })
@@ -180,12 +189,21 @@ describe('gulp-yaml', function () {
       stream.end()
     })
 
-    it('should throw if not well formatted', function (done) {
+    it('should return empty content on invalid yaml and emit error in underlying stream', function (done) {
       const stream = yaml()
+      let count = 0
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
-        done()
+        count++
+      })
+      stream.once('data', function (file) {
+        file.contents.pipe(es.wait(function (_, data) {
+          assert.strictEqual(data.toString(), '')
+          count++
+          assert.strictEqual(count, 2)
+          done()
+        }))
       })
 
       stream.write(_createFile(function () {
@@ -243,8 +261,8 @@ describe('gulp-yaml', function () {
 
       stream.once('data', function (file) {
         file.contents.pipe(es.wait(function (_, data) {
-          assert.equal(data.toString(), '{"key":null}')
-          assert.equal(file.extname, '.json')
+          assert.strictEqual(data.toString(), '{"key":null}')
+          assert.strictEqual(file.extname, '.json')
           done()
         }))
       })
@@ -261,7 +279,7 @@ describe('gulp-yaml', function () {
 
       stream.once('data', function (file) {
         file.contents.pipe(es.wait(function () {
-          assert.equal(Object.keys(options).length, 0)
+          assert.strictEqual(Object.keys(options).length, 0)
           done()
         }))
       })

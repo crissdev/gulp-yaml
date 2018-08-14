@@ -21,7 +21,7 @@ module.exports = function (options) {
 
     const stream = this
 
-    file.contents = getFileContents(file, options, stream, callback)
+    file.contents = getFileContents(file, options, stream)
 
     stream.push(file)
     callback()
@@ -41,13 +41,13 @@ function getSchema (options) {
   throw getError('Schema ' + schemaName + ' is not valid')
 }
 
-function getFileContents (file, options, stream, callback) {
+function getFileContents (file, options, stream) {
   if (file.isNull()) {
     return file.contents
   }
 
   if (file.isBuffer()) {
-    return getBufferContents(file, options, stream, callback)
+    return getBufferContents(file, options, stream)
   }
 
   if (file.isStream()) {
@@ -55,12 +55,12 @@ function getFileContents (file, options, stream, callback) {
   }
 }
 
-function getBufferContents (file, options, stream, callback) {
+function getBufferContents (file, options, stream) {
   const parsed = convertYaml(file, file.contents, options)
 
   if (parsed instanceof PluginError) {
     stream.emit('error', parsed)
-    return callback()
+    return Buffer.from('')
   }
 
   return parsed
