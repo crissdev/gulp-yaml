@@ -1,3 +1,10 @@
+# 2.0.2 (2018-08-17)
+
+### Dependencies
+
+- upgrade development & production dependencies
+
+
 # 2.0.1 (2018-04-15)
 
 ### Bug Fixes
