@@ -1,3 +1,9 @@
+# 2.0.3 (2019-01-24)
+
+- upgrade development & production dependencies
+- downgrade and pin event-stream to 3.3.4 &ndash; https://github.com/dominictarr/event-stream/issues/116
+
+
 # 2.0.2 (2018-08-17)
 
 ### Dependencies

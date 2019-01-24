@@ -79,7 +79,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if loading untrusted document with safe option enabled', function (done) {
-      const stream = yaml({safe: true})
+      const stream = yaml({ safe: true })
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -91,7 +91,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use safe loading by default', function (done) {
-      const stream = yaml({safe: true})
+      const stream = yaml({ safe: true })
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -103,7 +103,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and reject input', function (done) {
-      const stream = yaml({schema: 'FAILSAFE_SCHEMA'})
+      const stream = yaml({ schema: 'FAILSAFE_SCHEMA' })
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -115,7 +115,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and accept input', function (done) {
-      const stream = yaml({schema: 'JSON_SCHEMA', safe: false})
+      const stream = yaml({ schema: 'JSON_SCHEMA', safe: false })
 
       stream.once('data', function (file) {
         assert.strictEqual(_fileContents(file), '{"key":null}')
@@ -215,7 +215,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should throw if loading untrusted document with safe option enabled', function (done) {
-      const stream = yaml({safe: true})
+      const stream = yaml({ safe: true })
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -243,7 +243,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and reject input', function (done) {
-      const stream = yaml({schema: 'FAILSAFE_SCHEMA'})
+      const stream = yaml({ schema: 'FAILSAFE_SCHEMA' })
 
       stream.once('error', function (err) {
         assert.ok(err instanceof PluginError)
@@ -257,7 +257,7 @@ describe('gulp-yaml', function () {
     })
 
     it('should use the specified schema and accept input', function (done) {
-      const stream = yaml({schema: 'JSON_SCHEMA', safe: false})
+      const stream = yaml({ schema: 'JSON_SCHEMA', safe: false })
 
       stream.once('data', function (file) {
         file.contents.pipe(es.wait(function (_, data) {

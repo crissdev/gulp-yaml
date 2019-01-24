@@ -106,5 +106,5 @@ function yaml2json (buffer, options) {
 }
 
 function getError (error) {
-  return new PluginError(PLUGIN_NAME, error, {showStack: true})
+  return new PluginError(PLUGIN_NAME, error, { showStack: true })
 }
