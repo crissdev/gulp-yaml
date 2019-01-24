@@ -117,3 +117,4 @@ Loader will throw on warnings if this function is not provided.
 ## License
 
 MIT © [Cristian Trifan](https://crissdev.com)
+
