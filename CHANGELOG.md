@@ -1,3 +1,8 @@
+# 2.0.4 (2019-05-01)
+
+- upgrade development & production dependencies
+
+
 # 2.0.3 (2019-01-24)
 
 - upgrade development & production dependencies
